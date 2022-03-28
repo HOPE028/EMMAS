@@ -56,8 +56,6 @@ int main(void) {
 	
 	return 0;
 
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> afcc92e1f813a18615d77fba5d5ba498b6f49244
+
