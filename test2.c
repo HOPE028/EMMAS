@@ -28,12 +28,12 @@ unsigned short int isPressed(unsigned short int button) {
 	
 }
 
-void goButton() {
-	if (isPressed(BUTTON)) {
-		digitalWrite(VALVE, HIGH);
+void goButton(button, valve) {
+	if (isPressed(button)) {
+		digitalWrite(valve, HIGH);
 	
 		delay(3000);
-		digitalWrite(VALVE, LOW);
+		digitalWrite(valve, LOW);
 	}
 }
 
@@ -50,7 +50,7 @@ int main(void) {
 	
 	pullUpDnControl(BUTTON, PUD_UP);
 	
-	wiringPiISR(BUTTON, INT_EDGE_FALLING, goButton);
+	wiringPiISR(BUTTON, INT_EDGE_FALLING, goButton(BUTTON, VALVE));
 	
 	pause(); 
 	
