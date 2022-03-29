@@ -191,7 +191,7 @@ int main(void) {
 	pinMode(VALVE_LEFT_PDWM, OUTPUT);
 	pinMode(VALVE_RIGHT_PDWM, OUTPUT);
 	pinMode(VALVE_LEFT, OUTPUT);
-	pinMode(VALVE_RIGHT OUTPUT);
+	pinMode(VALVE_RIGHT, OUTPUT);
 
 	digitalWrite(VALVE_LEFT_PDWM, LOW);
 	digitalWrite(VALVE_RIGHT_PDWM, LOW);
