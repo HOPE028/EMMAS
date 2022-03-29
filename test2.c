@@ -67,6 +67,21 @@ void cleanUp(int signo) {
 
 //Making sure click was intentional 
 
+unsigned short int held(unsigned short int button, unsigned short int holdTime) {
+    unsigned short int sample;
+    unsigned short int sampleCount = holdTime/25;
+    unsigned short int delayInterval = holdTime/40;
+
+    for(sample=0; sample<sampleCount; sample++) {
+        if (digitalRead(button)) {
+            break;
+        }
+        delay(delayInterval);
+    }
+
+    return sample == sampleCount ? 1 : 0;
+}
+
 unsigned short int isPressed_BUTTON() {
 	static struct timespec lastCall;
 	struct timespec thisCall;
