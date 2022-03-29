@@ -12,8 +12,8 @@
 #define BUTTON_RIGHT_UP 17
 #define BUTTON_RIGHT_DOWN 17
 
-#define VALVE_LEFT_PDWM 5
-#define VALVE_RIGHT_PDWM 5
+#define VALVE_LEFT_PWM 5
+#define VALVE_RIGHT_PWM 5
 #define VALVE_LEFT 5
 #define VALVE_RIGHT 5
 
@@ -50,14 +50,14 @@ void cleanUp(int signo) {
 	pullUpDnControl(BUTTON_RIGHT_DOWN, PUD_DOWN);
 
 	//Valves to low
-	digitalWrite(VALVE_LEFT_PDWM, LOW);
-	digitalWrite(VALVE_RIGHT_PDWM, LOW);
+	digitalWrite(VALVE_LEFT_PWM, LOW);
+	digitalWrite(VALVE_RIGHT_PWM, LOW);
 	digitalWrite(VALVE_LEFT, LOW);
 	digitalWrite(VALVE_RIGHT, LOW);
 
 	//Valves to input
-	pinMode(VALVE_LEFT_PDWM, INPUT);
-	pinMode(VALVE_RIGHT_PDWM, INPUT);
+	pinMode(VALVE_LEFT_PWM, INPUT);
+	pinMode(VALVE_RIGHT_PWM, INPUT);
 	pinMode(VALVE_LEFT, INPUT);
 	pinMode(VALVE_RIGHT, INPUT);
 
@@ -67,13 +67,13 @@ void cleanUp(int signo) {
 
 //Making sure click was intentional 
 
-unsigned short int held(unsigned short int button, unsigned short int holdTime) {
+unsigned short int held_BUTTON(unsigned short int button, unsigned short int holdTime) {
     unsigned short int sample;
     unsigned short int sampleCount = holdTime/25;
     unsigned short int delayInterval = holdTime/40;
 
-    for(sample=0; sample<sampleCount; sample++) {
-        if (digitalRead(button)) {
+    for(sample = 0; sample<sampleCount; sample++) {
+        if (!digitalRead(button)) {
             break;
         }
         delay(delayInterval);
@@ -82,40 +82,37 @@ unsigned short int held(unsigned short int button, unsigned short int holdTime) 
     return sample == sampleCount ? 1 : 0;
 }
 
-unsigned short int isPressed_BUTTON() {
-	static struct timespec lastCall;
-	struct timespec thisCall;
-	float timeDiff;
-	
-	clock_gettime(CLOCK_REALTIME, &thisCall);
-	timeDiff = (thisCall.tv_sec + thisCall.tv_nsec/1E9 - lastCall.tv_sec - lastCall.tv_nsec/1E9)*5;
-	lastCall = thisCall;
-	
-	return timeDiff > 1 ? 1 : 0;
-}
+unsigned short int held_SWITCH(unsigned short int switch, unsigned short int holdTime, unsigned short int currentState) {
+ unsigned short int sample;
+ unsigned short int sampleCount = holdTime/25;
+ unsigned short int delayInterval = holdTime/40;
 
-unsigned short int isPressed_SWITCH() {
-	static struct timespec lastCall;
-	struct timespec thisCall;
-	float timeDiff;
-	
-	clock_gettime(CLOCK_REALTIME, &thisCall);
-	timeDiff = (thisCall.tv_sec + thisCall.tv_nsec/1E9 - lastCall.tv_sec - lastCall.tv_nsec/1E9)*1;
-	lastCall = thisCall;
-	
-	return timeDiff > 1.5 ? 1 : 0;
+ for(sample=0; sample<sampleCount; sample++) {
+		if (currentState == 1) {
+			if (!digitalRead(switch)) {
+					break;
+			}
+		}
+  else {
+				if (digitalRead(switch)) {
+					break;
+				}
+ 	 }
+			delay(delayInterval);
+ 	}
+ 	return sample == sampleCount ? 1 : 0;
 }
 
 //SWITCHES react
 
 void goSWITCH_POWER() {
-	if (isPressed_SWITCH()) {
+	if (held_SWITCH(SWITCH_POWER, 1000, POWER)) {
 		POWER = POWER * -1;
 	}
 }
 
 void goSWITCH_EQUAL() {
-	if (isPressed_SWITCH()) {
+	if (held_SWITCH(SWITCH_EQUAL, 1000, EQUAL)) {
 		EQUAL = EQUAL * -1;
 
 		if (EQUAL == 1) {
@@ -127,7 +124,7 @@ void goSWITCH_EQUAL() {
 }
 
 void goSWITCH_UP_OR_DOWN() {
-	if (isPressed_SWITCH()) {
+	if (held_SWITCH(SWITCH_UP_OR_DOWN 1000, UP_OR_DOWN)) {
 		UP_OR_DOWN = UP_OR_DOWN * -1;
 	}
 }
@@ -136,7 +133,7 @@ void goSWITCH_UP_OR_DOWN() {
 //BUTTONS react
 
 void goBUTTON_LEFT_UP() {
-	if (isPressed_BUTTON(BUTTON_LEFT_UP)) {
+	if (held_BUTTON(BUTTON_LEFT_UP, 500)) {
 		if (EQUAL == 1) {
 			LEVEL_LEFT++;
 			LEVEL_RIGHT++;
@@ -149,7 +146,7 @@ void goBUTTON_LEFT_UP() {
 }
 
 void goBUTTON_LEFT_DOWN() {
-	if (isPressed_BUTTON(BUTTON_LEFT_DOWN)) {
+	if (held_BUTTON(BUTTON_LEFT_DOWN, 500)) {
 		if (EQUAL == 1) {
 			LEVEL_LEFT--;
 			LEVEL_RIGHT--;
@@ -162,7 +159,7 @@ void goBUTTON_LEFT_DOWN() {
 }
 
 void goBUTTON_RIGHT_UP() {
-	if (isPressed_BUTTON(BUTTON_RIGHT_UP)) {
+	if (held_BUTTON(BUTTON_RIGHT_UP, 500)) {
 		if (EQUAL == 1) {
 			LEVEL_LEFT++;
 			LEVEL_RIGHT++;
@@ -175,7 +172,7 @@ void goBUTTON_RIGHT_UP() {
 }
 
 void goBUTTON_RIGHT_DOWN() {
-	if (isPressed_BUTTON(BUTTON_RIGHT_DOWN)) {
+	if (held_BUTTON(BUTTON_RIGHT_DOWN, 500)) {
 		if (EQUAL == 1) {
 			LEVEL_LEFT--;
 			LEVEL_RIGHT--;
@@ -186,6 +183,11 @@ void goBUTTON_RIGHT_DOWN() {
 		}
 	}
 }
+
+
+//Control over the valves
+
+
 
 
 int main(void) {
@@ -203,13 +205,13 @@ int main(void) {
 	pinMode(BUTTON_LEFT_DOWN, INPUT);
 	pinMode(BUTTON_RIGHT_DOWN, INPUT);
 
-	pinMode(VALVE_LEFT_PDWM, OUTPUT);
-	pinMode(VALVE_RIGHT_PDWM, OUTPUT);
+	pinMode(VALVE_LEFT_PWM, OUTPUT);
+	pinMode(VALVE_RIGHT_PWM, OUTPUT);
 	pinMode(VALVE_LEFT, OUTPUT);
 	pinMode(VALVE_RIGHT, OUTPUT);
 
-	digitalWrite(VALVE_LEFT_PDWM, LOW);
-	digitalWrite(VALVE_RIGHT_PDWM, LOW);
+	digitalWrite(VALVE_LEFT_PWM, LOW);
+	digitalWrite(VALVE_RIGHT_PWM, LOW);
 	digitalWrite(VALVE_LEFT, LOW);
 	digitalWrite(VALVE_RIGHT, LOW);
 
