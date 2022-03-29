@@ -30,7 +30,6 @@ int min(int a, int b);
 //-1 => false, 1 => true
 int POWER = -1;
 int EQUAL = -1;
-int UP_OR_DOWN = 1; //Set to go up first
 
 int LEVEL_LEFT = 0;
 int LEVEL_RIGHT = 0;
