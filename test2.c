@@ -96,19 +96,19 @@ unsigned short int held_BUTTON(unsigned short int button, unsigned short int hol
     return sample == sampleCount ? 1 : 0;
 }
 
-unsigned short int held_SWITCH(unsigned short int switch, unsigned short int holdTime, unsigned short int currentState) {
+unsigned short int held_SWITCH(unsigned short int current_switch, unsigned short int holdTime, unsigned short int currentState) {
  unsigned short int sample;
  unsigned short int sampleCount = holdTime/25;
  unsigned short int delayInterval = holdTime/40;
 
  for(sample=0; sample<sampleCount; sample++) {
 		if (currentState == 1) {
-			if (!digitalRead(switch)) {
+			if (!digitalRead(current_switch)) {
 					break;
 			}
 		}
   else {
-				if (digitalRead(switch)) {
+				if (digitalRead(current_switch)) {
 					break;
 				}
  	 }
@@ -136,13 +136,6 @@ void goSWITCH_EQUAL() {
 		}
 	}
 }
-
-void goSWITCH_UP_OR_DOWN() {
-	if (held_SWITCH(SWITCH_UP_OR_DOWN 1000, UP_OR_DOWN)) {
-		UP_OR_DOWN = UP_OR_DOWN * -1;
-	}
-}
-
 
 //BUTTONS react
 
@@ -585,7 +578,6 @@ int main(void) {
 	//SWTICHES SWITCHED ON
 	wiringPiISR(SWITCH_POWER, INT_EDGE_FALLING, goSWITCH_POWER);
 	wiringPiISR(SWITCH_EQUAL, INT_EDGE_FALLING, goSWITCH_EQUAL);
-	wiringPiISR(SWITCH_UP_OR_DOWN, INT_EDGE_FALLING, goSWITCH_UP_OR_DOWN);
 
 	createThread();
 	
