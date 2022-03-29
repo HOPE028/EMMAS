@@ -19,7 +19,6 @@
 
 #define SWITCH_POWER 9
 #define SWITCH_EQUAL 9
-#define SWITCH_UP_OR_DOWN 9
 
 //METHODS
 
@@ -31,11 +30,26 @@ int min(int a, int b);
 //-1 => false, 1 => true
 int POWER = -1;
 int EQUAL = -1;
-int UP_OR_DOWN = -1;
+int UP_OR_DOWN = 1; //Set to go up first
 
 int LEVEL_LEFT = 0;
 int LEVEL_RIGHT = 0;
 int LEVEL_MIN = 0;
+
+int delayLeft[2][2] = { 
+ {0, 100}, //PWM => delay on, delay off
+ {0, 100}  //Exhaust valves => delay on, delay off
+};
+
+int delayRight[2][2] = { 
+ {0, 100}, //PWM => delay on, delay off
+ {0, 100}  //Exhaust valves => delay on, delay off
+};
+
+static pthread_t thread_VALVE_RIGHT_PWM;
+static pthread_t thread_VALVE_LEFT_PWM;
+static pthread_t thread_VALVE_RIGHT;
+static pthread_t thread_VALVE_LEFT;
 
 
 //Functions
@@ -134,52 +148,64 @@ void goSWITCH_UP_OR_DOWN() {
 
 void goBUTTON_LEFT_UP() {
 	if (held_BUTTON(BUTTON_LEFT_UP, 500)) {
-		if (EQUAL == 1) {
+		if (LEVEL_LEFT < 8) {
+			if (EQUAL == 1) {
 			LEVEL_LEFT++;
 			LEVEL_RIGHT++;
 			LEVEL_MIN++;
-		} 
-		else {
-			LEVEL_LEFT++;
+			} 
+			else {
+				LEVEL_LEFT++;
+			}
+			changeDelay();
 		}
 	}
 }
 
 void goBUTTON_LEFT_DOWN() {
 	if (held_BUTTON(BUTTON_LEFT_DOWN, 500)) {
-		if (EQUAL == 1) {
-			LEVEL_LEFT--;
-			LEVEL_RIGHT--;
-			LEVEL_MIN--;
-		} 
-		else {
-			LEVEL_LEFT--;
+		if (LEVEL_LEFT > 0) {
+			if (EQUAL == 1) {
+				LEVEL_LEFT--;
+				LEVEL_RIGHT--;
+				LEVEL_MIN--;
+			} 
+			else {
+				LEVEL_LEFT--;
+			}
+			changeDelay();
 		}
 	}
 }
 
 void goBUTTON_RIGHT_UP() {
 	if (held_BUTTON(BUTTON_RIGHT_UP, 500)) {
-		if (EQUAL == 1) {
-			LEVEL_LEFT++;
-			LEVEL_RIGHT++;
-			LEVEL_MIN++;
-		} 
-		else {
-			LEVEL_RIGHT++;
+		if (LEVEL_RIGHT < 8) {
+			if (EQUAL == 1) {
+				LEVEL_LEFT++;
+				LEVEL_RIGHT++;
+				LEVEL_MIN++;
+			} 
+			else {
+				LEVEL_RIGHT++;
+			}
+			changeDelay();
 		}
 	}
 }
 
 void goBUTTON_RIGHT_DOWN() {
 	if (held_BUTTON(BUTTON_RIGHT_DOWN, 500)) {
-		if (EQUAL == 1) {
-			LEVEL_LEFT--;
-			LEVEL_RIGHT--;
-			LEVEL_MIN--;
-		} 
-		else {
-			LEVEL_RIGHT--;
+		if (LEVEL_RIGHT > 0) {
+			if (EQUAL == 1) {
+				LEVEL_LEFT--;
+				LEVEL_RIGHT--;
+				LEVEL_MIN--;
+			} 
+			else {
+				LEVEL_RIGHT--;
+			}
+			changeDelay();
 		}
 	}
 }
@@ -187,7 +213,337 @@ void goBUTTON_RIGHT_DOWN() {
 
 //Control over the valves
 
+void changeDelay() {
+	if (EQUAL == 1) {
+		//update delay for left and right using one value
+		if (LEVEL_MIN == 0) {
+			//LEFT
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 0;
+			delayLeft[1][1] = 100;
 
+			//RIGHT
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 0;
+			delayRight[1][1] = 100;
+		}
+		else if (LEVEL_MIN == 1) {
+			//LEFT
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 25;
+			delayLeft[1][1] = 75;
+
+			//RIGHT
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 25;
+			delayRight[1][1] = 75;
+		}
+		else if (LEVEL_MIN == 2) {
+			//LEFT
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 50;
+			delayLeft[1][1] = 50;
+
+			//RIGHT
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 50;
+			delayRight[1][1] = 50;
+		}
+		else if (LEVEL_MIN == 3) {
+			//LEFT
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 75;
+			delayLeft[1][1] = 25;
+
+			//RIGHT
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 75;
+			delayRight[1][1] = 25;
+		}
+		else if (LEVEL_MIN == 4) {
+			//LEFT
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+
+			//RIGHT
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else if (LEVEL_MIN == 5) {
+			//LEFT
+			delayLeft[0][0] = 25;
+			delayLeft[0][1] = 75;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+
+			//RIGHT
+			delayRight[0][0] = 25;
+			delayRight[0][1] = 75;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else if (LEVEL_MIN == 6) {
+			//LEFT
+			delayLeft[0][0] = 50;
+			delayLeft[0][1] = 50;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+
+			//RIGHT
+			delayRight[0][0] = 50;
+			delayRight[0][1] = 50;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else if (LEVEL_MIN == 7) {
+			//LEFT
+			delayLeft[0][0] = 75;
+			delayLeft[0][1] = 25;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+
+			//RIGHT
+			delayRight[0][0] = 75;
+			delayRight[0][1] = 25;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else {
+			//LEFT
+			delayLeft[0][0] = 100;
+			delayLeft[0][1] = 0;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+
+			//RIGHT
+			delayRight[0][0] = 100;
+			delayRight[0][1] = 0;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+	} 
+
+	else {
+		//LEFT CODE
+		if (LEVEL_LEFT == 0) {
+
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 0;
+			delayLeft[1][1] = 100;
+		}
+		else if (LEVEL_LEFT == 1) {
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 25;
+			delayLeft[1][1] = 75;
+		}
+		else if (LEVEL_LEFT == 2) {
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 50;
+			delayLeft[1][1] = 50;
+		}
+		else if (LEVEL_LEFT == 3) {
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 75;
+			delayLeft[1][1] = 25;
+		}
+		else if (LEVEL_LEFT == 4) {
+			delayLeft[0][0] = 0;
+			delayLeft[0][1] = 100;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+		}
+		else if (LEVEL_LEFT == 5) {
+			delayLeft[0][0] = 25;
+			delayLeft[0][1] = 75;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+		}
+		else if (LEVEL_LEFT == 6) {
+			delayLeft[0][0] = 50;
+			delayLeft[0][1] = 50;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+		}
+		else if (LEVEL_LEFT == 7) {
+			delayLeft[0][0] = 75;
+			delayLeft[0][1] = 25;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+		}
+		else {
+			delayLeft[0][0] = 100;
+			delayLeft[0][1] = 0;
+			delayLeft[1][0] = 100;
+			delayLeft[1][1] = 0;
+		}
+
+
+		//RIGHT CODE
+		if (LEVEL_RIGHT == 0) {
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 0;
+			delayRight[1][1] = 100;
+		}
+		else if (LEVEL_RIGHT == 1) {
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 25;
+			delayRight[1][1] = 75;
+		}
+		else if (LEVEL_RIGHT == 2) {
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 50;
+			delayRight[1][1] = 50;
+		}
+		else if (LEVEL_RIGHT == 3) {
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 75;
+			delayRight[1][1] = 25;
+		}
+		else if (LEVEL_RIGHT == 4) {
+			delayRight[0][0] = 0;
+			delayRight[0][1] = 100;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else if (LEVEL_RIGHT == 5) {
+			delayRight[0][0] = 25;
+			delayRight[0][1] = 75;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else if (LEVEL_RIGHT == 6) {
+			delayRight[0][0] = 50;
+			delayRight[0][1] = 50;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else if (LEVEL_RIGHT == 7) {
+			delayRight[0][0] = 75;
+			delayRight[0][1] = 25;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+		else {
+			delayRight[0][0] = 100;
+			delayRight[0][1] = 0;
+			delayRight[1][0] = 100;
+			delayRight[1][1] = 0;
+		}
+	}
+}
+
+
+//MOVE VALVE RIGHT PWM
+void move_VALVE_RIGHT_PWM() {
+	for (;;) {
+		if (POWER == 1) {
+			digitalWrite(VALVE_RIGHT_PWM, HIGH);
+			delay(delayRight[0][0]);
+			digitalWrite(VALVE_RIGHT_PWM, LOW);
+			delay(delayRight[0][1]);
+		}
+		else {
+			digitalWrite(VALVE_RIGHT_PWM, LOW);
+			delay(200);
+		}
+	}
+}
+
+void *func_VALVE_RIGHT_PWM(void *args) {
+    move_VALVE_RIGHT_PWM();
+    return 0;
+}
+
+//MOVE VALVE LEFT PWM
+void move_VALVE_LEFT_PWM() {
+	for (;;) {
+		if (POWER == 1) {
+			digitalWrite(VALVE_LEFT_PWM, HIGH);
+			delay(delayLeft[0][0]);
+			digitalWrite(VALVE_LEFT_PWM, LOW);
+			delay(delayLeft[0][1]);
+		}
+		else {
+			digitalWrite(VALVE_LEFT_PWM, LOW);
+			delay(200);
+		}
+	}
+}
+
+void *func_VALVE_LEFT_PWM(void *args) {
+    move_VALVE_LEFT_PWM();
+    return 0;
+}
+
+
+//MOVE VALVE RIGHT 
+void move_VALVE_RIGHT() {
+	for (;;) {
+		if (POWER == 1) {
+			digitalWrite(VALVE_RIGHT, HIGH);
+			delay(delayRight[1][0]);
+			digitalWrite(VALVE_RIGHT, LOW);
+			delay(delayRight[1][1]);
+		}
+		else {
+			digitalWrite(VALVE_RIGHT, LOW);
+			delay(200);
+		}
+	}
+}
+
+void *func_VALVE_RIGHT(void *args) {
+    move_VALVE_RIGHT();
+    return 0;
+}
+
+//MOVE VALVE LEFT 
+void move_VALVE_LEFT() {
+	for (;;) {
+		if (POWER == 1) {
+			digitalWrite(VALVE_LEFT, HIGH);
+			delay(delayLeft[1][0]);
+			digitalWrite(VALVE_LEFT, LOW);
+			delay(delayLeft[1][1]);
+		}
+		else {
+			digitalWrite(VALVE_LEFT, LOW);
+			delay(200);
+		}
+	}
+}
+
+void *func_VALVE_LEFT(void *args) {
+    move_VALVE_LEFT();
+    return 0;
+}
+
+void createThread() {
+	pthread_create(&thread_VALVE_RIGHT_PWM, NULL, func_VALVE_RIGHT_PWM, NULL);
+	pthread_create(&thread_VALVE_LEFT_PWM, NULL, func_VALVE_LEFT_PWM, NULL);
+	pthread_create(&thread_VALVE_RIGHT, NULL, func_VALVE_RIGHT, NULL);
+	pthread_create(&thread_VALVE_RIGHT, NULL, func_VALVE_RIGHT, NULL);
+}
 
 
 int main(void) {
@@ -230,6 +586,8 @@ int main(void) {
 	wiringPiISR(SWITCH_POWER, INT_EDGE_FALLING, goSWITCH_POWER);
 	wiringPiISR(SWITCH_EQUAL, INT_EDGE_FALLING, goSWITCH_EQUAL);
 	wiringPiISR(SWITCH_UP_OR_DOWN, INT_EDGE_FALLING, goSWITCH_UP_OR_DOWN);
+
+	createThread();
 	
 	pause(); 
 	
