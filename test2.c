@@ -534,7 +534,7 @@ void createThread() {
 	pthread_create(&thread_VALVE_RIGHT_PWM, NULL, func_VALVE_RIGHT_PWM, NULL);
 	pthread_create(&thread_VALVE_LEFT_PWM, NULL, func_VALVE_LEFT_PWM, NULL);
 	pthread_create(&thread_VALVE_RIGHT, NULL, func_VALVE_RIGHT, NULL);
-	pthread_create(&thread_VALVE_RIGHT, NULL, func_VALVE_RIGHT, NULL);
+	pthread_create(&thread_VALVE_LEFT, NULL, func_VALVE_RIGHT, NULL);
 }
 
 
