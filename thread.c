@@ -9,6 +9,12 @@
 
 int special = 0;
 
+void cleanUp(int signo) {
+	pullUpDnControl(BUTTON_LEFT_UP, PUD_DOWN);
+
+ exit(0);
+}
+
 unsigned short int held_BUTTON(unsigned short int button, unsigned short int holdTime) {
     unsigned short int sample;
     unsigned short int sampleCount = holdTime/25;
