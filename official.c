@@ -8,17 +8,17 @@
 //GPIO PORTS
 
 #define BUTTON_LEFT_UP 17
-#define BUTTON_LEFT_DOWN 17
-#define BUTTON_RIGHT_UP 17
-#define BUTTON_RIGHT_DOWN 17
+#define BUTTON_LEFT_DOWN 0
+#define BUTTON_RIGHT_UP 0
+#define BUTTON_RIGHT_DOWN 0
 
 #define VALVE_LEFT_PWM 23
 #define VALVE_RIGHT_PWM 19
-#define VALVE_LEFT 5
+#define VALVE_LEFT 12
 #define VALVE_RIGHT 21
 
-#define SWITCH_POWER 9
-#define SWITCH_EQUAL 9
+#define SWITCH_POWER 20
+#define SWITCH_EQUAL 0
 
 //METHODS
 
@@ -460,7 +460,7 @@ void move_VALVE_RIGHT_PWM() {
 			digitalWrite(VALVE_RIGHT_PWM, LOW);
 			delay(200);
 		}
-	}
+	}	
 }
 
 
@@ -514,6 +514,7 @@ void *func_VALVE_RIGHT(void *args) {
 
 //MOVE VALVE LEFT 
 void move_VALVE_LEFT() {
+	
 	for (;;) {
 		if (POWER == 1) {
 			digitalWrite(VALVE_LEFT, HIGH);
@@ -549,7 +550,7 @@ void createThread() {
 	pthread_create(&thread_VALVE_RIGHT_PWM, NULL, func_VALVE_RIGHT_PWM, NULL);
 	pthread_create(&thread_VALVE_LEFT_PWM, NULL, func_VALVE_LEFT_PWM, NULL);
 	pthread_create(&thread_VALVE_RIGHT, NULL, func_VALVE_RIGHT, NULL);
-	pthread_create(&thread_VALVE_LEFT, NULL, func_VALVE_RIGHT, NULL);
+	pthread_create(&thread_VALVE_LEFT, NULL, func_VALVE_LEFT, NULL);
 	pthread_create(&thread_logToConsole, NULL, func_logToConsole, NULL);
 }
 
@@ -585,10 +586,10 @@ int main(void) {
 	pullUpDnControl(BUTTON_RIGHT_DOWN, PUD_UP);
 
 	//BUTTON CLICKED ON
-	wiringPiISR(BUTTON_LEFT_UP, INT_EDGE_FALLING, goBUTTON_LEFT_UP);
-	wiringPiISR(BUTTON_RIGHT_UP, INT_EDGE_FALLING, goBUTTON_RIGHT_UP);
-	wiringPiISR(BUTTON_LEFT_DOWN, INT_EDGE_FALLING, goBUTTON_LEFT_DOWN);
-	wiringPiISR(BUTTON_RIGHT_DOWN, INT_EDGE_FALLING, goBUTTON_RIGHT_DOWN);
+	wiringPiISR(BUTTON_LEFT_UP, INT_EDGE_RISING, goBUTTON_LEFT_UP);
+	wiringPiISR(BUTTON_RIGHT_UP, INT_EDGE_RISING, goBUTTON_RIGHT_UP);
+	wiringPiISR(BUTTON_LEFT_DOWN, INT_EDGE_RISING, goBUTTON_LEFT_DOWN);
+	wiringPiISR(BUTTON_RIGHT_DOWN, INT_EDGE_RISING, goBUTTON_RIGHT_DOWN);
 
 	//SWTICHES SWITCHED ON
 	wiringPiISR(SWITCH_POWER, INT_EDGE_FALLING, goSWITCH_POWER);
