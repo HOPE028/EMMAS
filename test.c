@@ -35,6 +35,8 @@ int main() {
 	signal(SIGTERM, cleanUp);
 	signal(SIGHUP, cleanUp);
 
+	wiringPiSetupGpio();
+
 	pinMode(VALVE_1, OUTPUT);
 	pinMode(VALVE_2, OUTPUT);
 	pinMode(VALVE_3, OUTPUT);
