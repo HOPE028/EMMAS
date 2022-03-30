@@ -23,6 +23,7 @@
 //METHODS
 
 int min(int a, int b);
+void changeDelay();
 
 
 //Global Variables: 
@@ -36,13 +37,13 @@ int LEVEL_RIGHT = 0;
 int LEVEL_MIN = 0;
 
 int delayLeft[2][2] = { 
- {0, 100}, //PWM => delay on, delay off
- {0, 100}  //Exhaust valves => delay on, delay off
+ {0, 1000}, //PWM => delay on, delay off
+ {0, 1000}  //Exhaust valves => delay on, delay off
 };
 
 int delayRight[2][2] = { 
- {0, 100}, //PWM => delay on, delay off
- {0, 100}  //Exhaust valves => delay on, delay off
+ {0, 1000}, //PWM => delay on, delay off
+ {0, 1000}  //Exhaust valves => delay on, delay off
 };
 
 static pthread_t thread_VALVE_RIGHT_PWM;
@@ -212,118 +213,118 @@ void changeDelay() {
 		if (LEVEL_MIN == 0) {
 			//LEFT
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
+			delayLeft[0][1] = 1000;
 			delayLeft[1][0] = 0;
-			delayLeft[1][1] = 100;
+			delayLeft[1][1] = 1000;
 
 			//RIGHT
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
+			delayRight[0][1] = 1000;
 			delayRight[1][0] = 0;
-			delayRight[1][1] = 100;
+			delayRight[1][1] = 1000;
 		}
 		else if (LEVEL_MIN == 1) {
 			//LEFT
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 25;
-			delayLeft[1][1] = 75;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 250;
+			delayLeft[1][1] = 750;
 
 			//RIGHT
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 25;
-			delayRight[1][1] = 75;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 250;
+			delayRight[1][1] = 750;
 		}
 		else if (LEVEL_MIN == 2) {
 			//LEFT
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 50;
-			delayLeft[1][1] = 50;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] =500;
+			delayLeft[1][1] =500;
 
 			//RIGHT
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 50;
-			delayRight[1][1] = 50;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 500;
+			delayRight[1][1] = 500;
 		}
 		else if (LEVEL_MIN == 3) {
 			//LEFT
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 75;
-			delayLeft[1][1] = 25;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 750;
+			delayLeft[1][1] = 250;
 
 			//RIGHT
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 75;
-			delayRight[1][1] = 25;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 750;
+			delayRight[1][1] = 250;
 		}
 		else if (LEVEL_MIN == 4) {
 			//LEFT
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 100;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 
 			//RIGHT
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 100;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_MIN == 5) {
 			//LEFT
-			delayLeft[0][0] = 25;
-			delayLeft[0][1] = 75;
-			delayLeft[1][0] = 100;
+			delayLeft[0][0] = 250;
+			delayLeft[0][1] = 750;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 
 			//RIGHT
-			delayRight[0][0] = 25;
-			delayRight[0][1] = 75;
-			delayRight[1][0] = 100;
+			delayRight[0][0] = 250;
+			delayRight[0][1] = 750;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_MIN == 6) {
 			//LEFT
-			delayLeft[0][0] = 50;
-			delayLeft[0][1] = 50;
-			delayLeft[1][0] = 100;
+			delayLeft[0][0] = 500;
+			delayLeft[0][1] = 500;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 
 			//RIGHT
-			delayRight[0][0] = 50;
-			delayRight[0][1] = 50;
-			delayRight[1][0] = 100;
+			delayRight[0][0] = 500;
+			delayRight[0][1] = 500;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_MIN == 7) {
 			//LEFT
-			delayLeft[0][0] = 75;
-			delayLeft[0][1] = 25;
-			delayLeft[1][0] = 100;
+			delayLeft[0][0] = 750;
+			delayLeft[0][1] = 250;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 
 			//RIGHT
-			delayRight[0][0] = 75;
-			delayRight[0][1] = 25;
-			delayRight[1][0] = 100;
+			delayRight[0][0] = 750;
+			delayRight[0][1] = 250;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else {
 			//LEFT
-			delayLeft[0][0] = 100;
+			delayLeft[0][0] = 1000;
 			delayLeft[0][1] = 0;
-			delayLeft[1][0] = 100;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 
 			//RIGHT
-			delayRight[0][0] = 100;
+			delayRight[0][0] = 1000;
 			delayRight[0][1] = 0;
-			delayRight[1][0] = 100;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 	} 
@@ -333,56 +334,56 @@ void changeDelay() {
 		if (LEVEL_LEFT == 0) {
 
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
+			delayLeft[0][1] = 1000;
 			delayLeft[1][0] = 0;
-			delayLeft[1][1] = 100;
+			delayLeft[1][1] = 1000;
 		}
 		else if (LEVEL_LEFT == 1) {
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 25;
-			delayLeft[1][1] = 75;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 250;
+			delayLeft[1][1] = 750;
 		}
 		else if (LEVEL_LEFT == 2) {
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 50;
-			delayLeft[1][1] = 50;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 500;
+			delayLeft[1][1] = 500;
 		}
 		else if (LEVEL_LEFT == 3) {
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 75;
-			delayLeft[1][1] = 25;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 750;
+			delayLeft[1][1] = 250;
 		}
 		else if (LEVEL_LEFT == 4) {
 			delayLeft[0][0] = 0;
-			delayLeft[0][1] = 100;
-			delayLeft[1][0] = 100;
+			delayLeft[0][1] = 1000;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 		}
 		else if (LEVEL_LEFT == 5) {
-			delayLeft[0][0] = 25;
-			delayLeft[0][1] = 75;
-			delayLeft[1][0] = 100;
+			delayLeft[0][0] = 250;
+			delayLeft[0][1] = 750;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 		}
 		else if (LEVEL_LEFT == 6) {
-			delayLeft[0][0] = 50;
-			delayLeft[0][1] = 50;
-			delayLeft[1][0] = 100;
+			delayLeft[0][0] = 500;
+			delayLeft[0][1] = 500;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 		}
 		else if (LEVEL_LEFT == 7) {
-			delayLeft[0][0] = 75;
-			delayLeft[0][1] = 25;
-			delayLeft[1][0] = 100;
+			delayLeft[0][0] = 750;
+			delayLeft[0][1] = 250;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 		}
 		else {
-			delayLeft[0][0] = 100;
+			delayLeft[0][0] = 1000;
 			delayLeft[0][1] = 0;
-			delayLeft[1][0] = 100;
+			delayLeft[1][0] = 1000;
 			delayLeft[1][1] = 0;
 		}
 
@@ -390,56 +391,56 @@ void changeDelay() {
 		//RIGHT CODE
 		if (LEVEL_RIGHT == 0) {
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
+			delayRight[0][1] = 1000;
 			delayRight[1][0] = 0;
-			delayRight[1][1] = 100;
+			delayRight[1][1] = 1000;
 		}
 		else if (LEVEL_RIGHT == 1) {
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 25;
-			delayRight[1][1] = 75;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 250;
+			delayRight[1][1] = 750;
 		}
 		else if (LEVEL_RIGHT == 2) {
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 50;
-			delayRight[1][1] = 50;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 500;
+			delayRight[1][1] = 500;
 		}
 		else if (LEVEL_RIGHT == 3) {
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 75;
-			delayRight[1][1] = 25;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 750;
+			delayRight[1][1] = 250;
 		}
 		else if (LEVEL_RIGHT == 4) {
 			delayRight[0][0] = 0;
-			delayRight[0][1] = 100;
-			delayRight[1][0] = 100;
+			delayRight[0][1] = 1000;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_RIGHT == 5) {
-			delayRight[0][0] = 25;
-			delayRight[0][1] = 75;
-			delayRight[1][0] = 100;
+			delayRight[0][0] = 250;
+			delayRight[0][1] = 750;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_RIGHT == 6) {
 			delayRight[0][0] = 50;
-			delayRight[0][1] = 50;
-			delayRight[1][0] = 100;
+			delayRight[0][1] =500;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_RIGHT == 7) {
-			delayRight[0][0] = 75;
-			delayRight[0][1] = 25;
-			delayRight[1][0] = 100;
+			delayRight[0][0] = 750;
+			delayRight[0][1] = 250;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 		else {
-			delayRight[0][0] = 100;
+			delayRight[0][0] = 1000;
 			delayRight[0][1] = 0;
-			delayRight[1][0] = 100;
+			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
 	}
