@@ -5,145 +5,67 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#define BUTTON 17
-#define SWITCH 20
-#define VALVE_1 13
-#define VALVE_2 19
+#define VALVE_1 23
+#define VALVE_2 21
+#define VALVE_3 16
+#define VALVE_4 19
 
-int direction = 1; // -1 => left, 1 => right
-int power = -1; //-1 => no power, 1 => power
 
 void cleanUp(int signo) {
-	pullUpDnControl(BUTTON, PUD_DOWN);
-	pullUpDnControl(SWITCH, PUD_DOWN);
+	//GPIO clean up:
+
+	//Valves to low
 	digitalWrite(VALVE_1, LOW);
 	digitalWrite(VALVE_2, LOW);
+	digitalWrite(VALVE_3, LOW);
+	digitalWrite(VALVE_4, LOW);
+
+	//Valves to input
 	pinMode(VALVE_1, INPUT);
 	pinMode(VALVE_2, INPUT);
+	pinMode(VALVE_3, INPUT);
+	pinMode(VALVE_4, INPUT);
+
 	exit(0);
 }
 
-unsigned short int isPressed_BUTTON() {
-	static struct timespec lastCall;
-	struct timespec thisCall;
-	float timeDiff;
-	
-	clock_gettime(CLOCK_REALTIME, &thisCall);
-	timeDiff = (thisCall.tv_sec + thisCall.tv_nsec/1E9 - lastCall.tv_sec - lastCall.tv_nsec/1E9)*5;
-	lastCall = thisCall;
-	
-	return timeDiff > 1 ? 1 : 0;
-	
-}
-
-unsigned short int held(unsigned short int button, unsigned short int holdTime) {
-    unsigned short int sample;
-    unsigned short int sampleCount = holdTime/25;
-    unsigned short int delayInterval = holdTime/40;
-
-    for(sample=0; sample<sampleCount; sample++) {
-        if (!digitalRead(button)) {
-            break;
-        }
-        delay(delayInterval);
-    }
-
-    return sample == sampleCount ? 1 : 0;
-}
-
-unsigned short int held_SWITCH(unsigned short int button, unsigned short int holdTime) {
-    unsigned short int sample;
-    unsigned short int sampleCount = holdTime/25;
-    unsigned short int delayInterval = holdTime/40;
-
-    for(sample=0; sample<sampleCount; sample++) {
-		if (direction == 1) {
-			if (!digitalRead(button)) {
-				break;
-			}
-			delay(delayInterval);
-        }
-        else {
-			if (digitalRead(button)) {
-				break;
-			}
-			delay(delayInterval);
-        }
-    }
-
-    return sample == sampleCount ? 1 : 0;
-}
-
-unsigned short int isPressed_SWITCH() {
-	static struct timespec lastCall;
-	struct timespec thisCall;
-	float timeDiff;
-	
-	clock_gettime(CLOCK_REALTIME, &thisCall);
-	timeDiff = (thisCall.tv_sec + thisCall.tv_nsec/1E9 - lastCall.tv_sec - lastCall.tv_nsec/1E9)*1;
-	lastCall = thisCall;
-	
-	return timeDiff > 1.5 ? 1 : 0;
-	
-}
-void goButton() {
-	if (held(BUTTON, 500)) {
-		power = power * -1;
-		if (power == 1) {
-			if (direction == -1) {
-				digitalWrite(VALVE_1, HIGH);
-			}
-			else {
-				digitalWrite(VALVE_2, HIGH);
-			}
-		} 
-		else {
-			digitalWrite(VALVE_1, LOW);
-			digitalWrite(VALVE_2, LOW);
-		}
-	}
-}
-
-void goSwitch() {
-	if (held_SWITCH(SWITCH, 1000)) {
-		direction = direction * -1;
-		
-		digitalWrite(VALVE_1, LOW);
-		digitalWrite(VALVE_2, LOW);
-		
-		if (power == 1) {
-			if (direction == -1) {
-				digitalWrite(VALVE_1, HIGH);
-			}
-			else {
-				digitalWrite(VALVE_2, HIGH);
-			}
-		}
-	}
-}
-
-int main(void) {
+int main() {
+	//If Turned off
 	signal(SIGINT, cleanUp);
 	signal(SIGTERM, cleanUp);
 	signal(SIGHUP, cleanUp);
-	
-	wiringPiSetupGpio();
-	
-	pinMode(BUTTON, INPUT);
-	pinMode(SWITCH, INPUT);
+
 	pinMode(VALVE_1, OUTPUT);
 	pinMode(VALVE_2, OUTPUT);
+	pinMode(VALVE_3, OUTPUT);
+	pinMode(VALVE_4, OUTPUT);
+
 	digitalWrite(VALVE_1, LOW);
 	digitalWrite(VALVE_2, LOW);
-	
-	pullUpDnControl(BUTTON, PUD_UP);
-	pullUpDnControl(SWITCH, PUD_UP);
-	
-	wiringPiISR(BUTTON, INT_EDGE_RISING, goButton);
-	wiringPiISR(SWITCH, INT_EDGE_FALLING, goSwitch);
-	
-	pause(); 
-	
-	return 0;
+	digitalWrite(VALVE_3, LOW);
+	digitalWrite(VALVE_4, LOW);
 
+	for (;;) {
+		digitalWrite(VALVE_1, HIGH);
+		delay(500);
+		digitalWrite(VALVE_1, LOW);
+
+
+		digitalWrite(VALVE_2, HIGH);
+		delay(500);
+		digitalWrite(VALVE_2, LOW);
+
+
+		digitalWrite(VALVE_3, HIGH);
+		delay(500);
+		digitalWrite(VALVE_3, LOW);
+
+
+		digitalWrite(VALVE_4, HIGH);
+		delay(500);
+		digitalWrite(VALVE_4, LOW);
+	}
+
+	return 0;
 }
+
