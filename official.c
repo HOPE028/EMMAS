@@ -447,20 +447,19 @@ void changeDelay() {
 
 
 //MOVE VALVE RIGHT PWM
-void move_VALVE_RIGHT_PWM() {
 	for (;;) {
 		if (POWER == 1) {
 			digitalWrite(VALVE_RIGHT_PWM, HIGH);
 			delay(delayRight[0][0]);
 			digitalWrite(VALVE_RIGHT_PWM, LOW);
 			delay(delayRight[0][1]);
-		}
-		else {
-			digitalWrite(VALVE_RIGHT_PWM, LOW);
-			delay(200);
+			}
+			else {
+				digitalWrite(VALVE_RIGHT_PWM, LOW);
+				delay(200);
+			}
 		}
 	}
-}
 
 void *func_VALVE_RIGHT_PWM(void *args) {
     move_VALVE_RIGHT_PWM();
