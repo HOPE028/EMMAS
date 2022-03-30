@@ -533,7 +533,7 @@ void *func_VALVE_LEFT(void *args) {
 
 void logToConsole() {
 	for (;;) {
-		printf("POWER: %s, C.O.B: %s, LEFT POWER: %d, RIGHT POWER %d", POWER == 1 ? "ON" : "OFF", EQUAL == 1 ? "ON" : "OFF", LEVEL_LEFT, LEVEL_RIGHT);
+		printf("POWER: %s, C.O.B: %s, LEFT POWER: %d, RIGHT POWER %d\n", POWER == 1 ? "ON" : "OFF", EQUAL == 1 ? "ON" : "OFF", LEVEL_LEFT, LEVEL_RIGHT);
 		delay(1000);
 	}
 }
