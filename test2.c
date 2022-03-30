@@ -12,10 +12,10 @@
 #define BUTTON_RIGHT_UP 17
 #define BUTTON_RIGHT_DOWN 17
 
-#define VALVE_LEFT_PWM 5
-#define VALVE_RIGHT_PWM 5
+#define VALVE_LEFT_PWM 23
+#define VALVE_RIGHT_PWM 19
 #define VALVE_LEFT 5
-#define VALVE_RIGHT 5
+#define VALVE_RIGHT 21
 
 #define SWITCH_POWER 9
 #define SWITCH_EQUAL 9
@@ -49,6 +49,7 @@ static pthread_t thread_VALVE_RIGHT_PWM;
 static pthread_t thread_VALVE_LEFT_PWM;
 static pthread_t thread_VALVE_RIGHT;
 static pthread_t thread_VALVE_LEFT;
+static pthread_t thread_logToConsole;
 
 
 //Functions
@@ -530,11 +531,24 @@ void *func_VALVE_LEFT(void *args) {
     return 0;
 }
 
+void logToConsole() {
+	for (;;) {
+		printf("POWER: %d, C.O.B: %d, LEFT POWER: %d, RIGHT POWER %d", POWER, EQUAL, LEVEL_LEFT, LEVEL_RIGHT);
+		delay(1000);
+	}
+}
+
+void *func_logToConsole(void *args) {
+	logToConsole();
+	return 0;
+}
+
 void createThread() {
 	pthread_create(&thread_VALVE_RIGHT_PWM, NULL, func_VALVE_RIGHT_PWM, NULL);
 	pthread_create(&thread_VALVE_LEFT_PWM, NULL, func_VALVE_LEFT_PWM, NULL);
 	pthread_create(&thread_VALVE_RIGHT, NULL, func_VALVE_RIGHT, NULL);
 	pthread_create(&thread_VALVE_LEFT, NULL, func_VALVE_RIGHT, NULL);
+	pthread_create(&thread_logToConsole, NULL, func_logToConsole, NULL);
 }
 
 
