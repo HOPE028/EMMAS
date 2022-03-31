@@ -7,10 +7,10 @@
 
 //GPIO PORTS
 
-#define BUTTON_LEFT_UP 0
-#define BUTTON_LEFT_DOWN 0
-#define BUTTON_RIGHT_UP 17
-#define BUTTON_RIGHT_DOWN 0
+#define BUTTON_LEFT_UP 6
+#define BUTTON_LEFT_DOWN 17
+#define BUTTON_RIGHT_UP 25
+#define BUTTON_RIGHT_DOWN 27
 
 #define VALVE_LEFT_PWM 23
 #define VALVE_RIGHT_PWM 19
@@ -18,7 +18,7 @@
 #define VALVE_RIGHT 21
 
 #define SWITCH_POWER 20
-#define SWITCH_EQUAL 0
+#define SWITCH_EQUAL 24
 
 //METHODS
 
@@ -141,7 +141,7 @@ void goSWITCH_EQUAL() {
 //BUTTONS react
 
 void goBUTTON_LEFT_UP() {
-	if (held_BUTTON(BUTTON_LEFT_UP, 500)) {
+	if (held_BUTTON(BUTTON_LEFT_UP, 800)) {
 		if (LEVEL_LEFT < 8) {
 			if (EQUAL == 1) {
 			LEVEL_LEFT++;
@@ -157,7 +157,7 @@ void goBUTTON_LEFT_UP() {
 }
 
 void goBUTTON_LEFT_DOWN() {
-	if (held_BUTTON(BUTTON_LEFT_DOWN, 500)) {
+	if (held_BUTTON(BUTTON_LEFT_DOWN, 800)) {
 		if (LEVEL_LEFT > 0) {
 			if (EQUAL == 1) {
 				LEVEL_LEFT--;
@@ -173,7 +173,7 @@ void goBUTTON_LEFT_DOWN() {
 }
 
 void goBUTTON_RIGHT_UP() {
-	if (held_BUTTON(BUTTON_RIGHT_UP, 500)) {
+	if (held_BUTTON(BUTTON_RIGHT_UP, 800)) {
 		if (LEVEL_RIGHT < 8) {
 			if (EQUAL == 1) {
 				LEVEL_LEFT++;
@@ -189,7 +189,7 @@ void goBUTTON_RIGHT_UP() {
 }
 
 void goBUTTON_RIGHT_DOWN() {
-	if (held_BUTTON(BUTTON_RIGHT_DOWN, 500)) {
+	if (held_BUTTON(BUTTON_RIGHT_DOWN, 800)) {
 		if (LEVEL_RIGHT > 0) {
 			if (EQUAL == 1) {
 				LEVEL_LEFT--;
