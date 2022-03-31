@@ -7,9 +7,9 @@
 
 //GPIO PORTS
 
-#define BUTTON_LEFT_UP 17
+#define BUTTON_LEFT_UP 0
 #define BUTTON_LEFT_DOWN 0
-#define BUTTON_RIGHT_UP 0
+#define BUTTON_RIGHT_UP 17
 #define BUTTON_RIGHT_DOWN 0
 
 #define VALVE_LEFT_PWM 23
