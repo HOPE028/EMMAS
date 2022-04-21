@@ -30,7 +30,7 @@ void cleanUp(int signo) {
 }
 
 int main() {
-	//If Turned off
+	//If Turned  off
 	signal(SIGINT, cleanUp);
 	signal(SIGTERM, cleanUp);
 	signal(SIGHUP, cleanUp);
