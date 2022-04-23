@@ -7,7 +7,7 @@
 
 //GPIO PORTS
 
-#define BUTTON_LEFT_UP 18
+#define BUTTON_LEFT_UP 18 
 #define BUTTON_LEFT_DOWN 17
 #define BUTTON_RIGHT_UP 25
 #define BUTTON_RIGHT_DOWN 27
@@ -135,13 +135,17 @@ void goSWITCH_EQUAL() {
 			LEVEL_RIGHT = LEVEL_MIN;
 			LEVEL_LEFT = LEVEL_MIN;
 		}
+		
+		changeDelay();
 	}
 }
 
 //BUTTONS react
 
 void goBUTTON_LEFT_UP() {
+	printf("CONTACT\n");
 	if (held_BUTTON(BUTTON_LEFT_UP, 800)) {
+		printf("CLICK\n");
 		if (LEVEL_LEFT < 8) {
 			if (EQUAL == 1) {
 			LEVEL_LEFT++;
@@ -157,6 +161,8 @@ void goBUTTON_LEFT_UP() {
 }
 
 void goBUTTON_LEFT_DOWN() {
+		printf("CONTACT\n");
+
 	if (held_BUTTON(BUTTON_LEFT_DOWN, 800)) {
 		if (LEVEL_LEFT > 0) {
 			if (EQUAL == 1) {
@@ -172,7 +178,9 @@ void goBUTTON_LEFT_DOWN() {
 	}
 }
 
-void goBUTTON_RIGHT_UP() {
+void goBUTTON_RIGHT_UP() {	
+	printf("CONTACT\n");
+
 	if (held_BUTTON(BUTTON_RIGHT_UP, 800)) {
 		if (LEVEL_RIGHT < 8) {
 			if (EQUAL == 1) {
@@ -189,6 +197,8 @@ void goBUTTON_RIGHT_UP() {
 }
 
 void goBUTTON_RIGHT_DOWN() {
+		printf("CONTACT\n");
+
 	if (held_BUTTON(BUTTON_RIGHT_DOWN, 800)) {
 		if (LEVEL_RIGHT > 0) {
 			if (EQUAL == 1) {
@@ -426,8 +436,8 @@ void changeDelay() {
 			delayRight[1][1] = 0;
 		}
 		else if (LEVEL_RIGHT == 6) {
-			delayRight[0][0] = 50;
-			delayRight[0][1] =500;
+			delayRight[0][0] = 500;
+			delayRight[0][1] = 500;
 			delayRight[1][0] = 1000;
 			delayRight[1][1] = 0;
 		}
