@@ -6,8 +6,10 @@ Project Link: https://projectboard.world/ysc/project/enhanced-mobility-mechanica
 
 # Part 3:
 
-## Answering the questions
+## Quesion:
 
 Currently, the endpoint that returns the onboarding form (GET /api/onboarding) returns hardcoded data. Can you describe the benefits/drawbacks around saving this onboarding steps data in the front-end, back-end (as hardcoded data), or in the database? When would you want to save the data at different levels of the stack?
 
-Here we go.
+## Answer:
+
+
